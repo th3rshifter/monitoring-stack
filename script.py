@@ -1,14 +1,8 @@
-num = int(input())
-last_digit = num % 10
-first_digit = (num // 10) % 10
-second_digit = num // 100
+n = int(input())
+nn = n * 2
+nnn = n * 3 
 
-print(last_digit, first_digit, second_digit)
+formula = (n * 100) + (10 * nn) + nnn
 
-sum_digit = (last_digit + first_digit + second_digit)
-multi_digit = (last_digit * first_digit * second_digit)
+print(formula, sep='')
 
-print('Сумма цифр =', sum_digit)
-print('Произведение цифр =', multi_digit)
-
-#test
