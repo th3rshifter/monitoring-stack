@@ -1,4 +1,5 @@
 #/opt/loki/config/loki.yml
+# Loki configuration file
 
 auth_enabled: false
 

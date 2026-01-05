@@ -1,4 +1,5 @@
 #/opt/promtail/config/promtail.yml
+#server2
 
 server:
   http_listen_port: 9080
