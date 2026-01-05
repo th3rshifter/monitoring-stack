@@ -3,42 +3,37 @@ server:
   grpc_listen_port: 0
 
 positions:
-  filename: /positions/positions.yaml
+  filename: /tmp/positions.yaml
 
 clients:
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
-  - job_name: system
+  - job_name: varlogs
     static_configs:
-      - targets:
-          - localhost
+      - targets: [localhost]
         labels:
           job: varlogs
+          host: th3rshifter
           __path__: /var/log/*.log
 
-  - job_name: auditd
+  - job_name: fail2ban
     static_configs:
-      - targets:
-          - localhost
+      - targets: [localhost]
         labels:
-          job: auditd
-          __path__: /var/log/audit/audit.log
-          
-  - job_name: docker
-    static_configs:
-      - targets:
-          - localhost
-        labels:
-          job: docker
-          __path__: /var/lib/docker/containers/*/*.log
-    pipeline_stages:
-    - docker: {}
+          job: fail2ban
+          host: th3rshifter
+          __path__: /var/log/fail2ban.log
 
-  - job_name: postgres
-    static_configs:
-      - targets:
-          - localhost
-        labels:
-          job: postgres
-          __path__: /var/lib/postgresql/data/pg_log/*.log
+  - job_name: journald
+    journal:
+      max_age: 12h
+      labels:
+        job: journald
+        host: th3rshifter
+    relabel_configs:
+      - source_labels: ['__journal__systemd_unit']
+        regex: '(fail2ban\.service|xray\.service|3x-ui\.service)'
+        action: keep
+      - source_labels: ['__journal__systemd_unit']
+        target_label: 'unit'

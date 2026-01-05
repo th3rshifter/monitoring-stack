@@ -1,0 +1,43 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ["alertname", "job", "instance"]
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 4h
+  receiver: telegram
+
+  routes:
+    - receiver: audit-api
+      matchers:
+        - severity=~".+"
+      group_wait: 0s
+      group_interval: 30s
+      repeat_interval: 1h
+    - receiver: telegram
+      matchers:
+        - severity=~".+"
+
+receivers:
+  - name: telegram
+    telegram_configs:
+      - bot_token: "<BOT_TOKEN>"
+        chat_id: -YOUR_CHAT_ID_HERE
+        parse_mode: HTML
+        send_resolved: true
+        message: |
+          <b>{{ .Status | toUpper }}</b> <b>{{ .CommonLabels.alertname }}</b>
+          {{- if .CommonLabels.severity }} ({{ .CommonLabels.severity }}){{ end }}
+          <b>job:</b> {{ .CommonLabels.job }}  <b>instance:</b> {{ .CommonLabels.instance }}
+          {{- range .Alerts }}
+          • {{ .Annotations.summary }}
+            {{- if .Annotations.description }}
+            {{ .Annotations.description }}
+            {{- end }}
+          {{- end }}
+
+  - name: audit-api
+    webhook_configs:
+      - url: http://audit-api:8000/webhook/alertmanager
+        send_resolved: true

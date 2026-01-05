@@ -1,0 +1,18 @@
+groups:
+  - name: test
+    rules:
+      - alert: TelegramTest2
+        expr: vector(1)
+        for: 100h
+        labels:
+          severity: info
+        annotations:
+          summary: "Telegram Test alert"
+          description: "Тестовая проверка доставки уведомлений (Prometheus → Alertmanager → Telegram)."
+          actions: |
+            1) Ничего делать не нужно — это тест.
+            2) Если сообщение не пришло: проверь Alertmanager receivers и Telegram bot token.
+            3) Проверь маршрутизацию: route.matchers для severity=info.
+            4) Ничего делать не нужно — это тест.
+            5) Если сообщение не пришло: проверь Alertmanager receivers и Telegram bot token.
+            6) Проверь маршрутизацию: route.matchers для severity=info.

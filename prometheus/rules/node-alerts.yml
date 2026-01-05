@@ -1,0 +1,67 @@
+groups:
+  - name: server2-node
+    rules:
+
+      - alert: InstanceDown
+        expr: up{job="server2", instance="185.233.81.213:9100"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "server2 недоступен (node_exporter down) — {{ $labels.instance }}"
+          description: "Prometheus не может собрать метрики с node_exporter (up=0) для {{ $labels.instance }} (job={{ $labels.job }}) более 1 минуты."
+          actions: |
+            1) Проверить доступность узла по сети: ping и TCP 9100 (например: curl -sS http://185.233.81.213:9100/metrics).
+            2) На server2 проверить сервис/контейнер node-exporter (запущен ли, не перезапускается ли).
+            3) Проверить firewall/iptables/ufw и маршрутизацию (порт 9100 должен быть доступен с Prometheus).
+            4) Проверить, что в prometheus.yml указан правильный target и нет DNS/ошибок адреса.
+            5) Если host реально упал — проверить доступ по SSH/консоль, последующий перезапуск).
+
+      - alert: HighCPUUsage
+        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{job="server2", mode="idle"}[1m])) * 100) > 80
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Высокая загрузка CPU > 80% — {{ $labels.instance }}"
+          description: "CPU usage превышает 80% по данным node_exporter (окно 1m) на {{ $labels.instance }} (job={{ $labels.job }}) более 1 минут."
+          actions: |
+            1) На host проверить текущую нагрузку: top/htop, uptime, vmstat 1, mpstat -P ALL 1.
+            2) Определить виновника: топ процессов по CPU (top -o %CPU / ps aux --sort=-%cpu | head).
+            3) Если это ожидаемая нагрузка (батчи/бэкапы) — зафиксировать и при необходимости скорректировать окно/порог.
+            4) Если нагрузка аномальная — проверить логи сервиса, который потребляет CPU; при необходимости ограничить ресурсы/перезапустить сервис.
+            5) Проверить iowait: если высокий iowait — проблема может быть в диске (см. iostat, dmesg).
+
+      - alert: LowMemory
+        expr: (node_memory_MemAvailable_bytes{job="server2"} / node_memory_MemTotal_bytes{job="server2"}) < 0.30
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "server2 мало памяти (<30% MemAvailable) — {{ $labels.instance }}"
+          description: "MemAvailable < 30% на {{ $labels.instance }} (job={{ $labels.job }}) более 1 минуту."
+          actions: |
+            1) Проверить потребление памяти: free -h, top/htop (RES), ps aux --sort=-%mem | head.
+            2) Проверить своп: swapon --show, vmstat 1 (si/so). При активном свопе — риск деградации.
+            3) Найти сервис/процесс с ростом памяти и проверить его логи на утечки/ошибки.
+            4) Если это контейнеры — проверить лимиты и фактическое потребление; при необходимости задать ограничения/перезапустить проблемный контейнер.
+            5) Если нагрузка штатная и память “держится” долго — пересмотреть sizing (RAM) или изменить пороги.
+
+      - alert: LowDiskSpace
+        expr: min by (instance) (
+              (node_filesystem_avail_bytes{job="server2", fstype!~"tmpfs|overlay|squashfs"}
+              / node_filesystem_size_bytes{job="server2", fstype!~"tmpfs|overlay|squashfs"})
+            ) < 0.50
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "server2 мало места на диске (<50% free) — {{ $labels.instance }}"
+          description: "Свободное место на одном из файловых разделов < 50% (job={{ $labels.job }}, instance={{ $labels.instance }}) более 1 минуты."
+          actions: |
+            1) Определить проблемный раздел: df -h, df -i. Уточнить, что заполнено (inode или bytes).
+            2) Найти “тяжёлые” каталоги: du -xhd1 /, затем углубиться в кандидатов.
+            3) Проверить логи (часто /var/log): ротируется ли logrotate, нет ли неконтролируемого роста.
+            4) Если занято Docker/контейнерами: docker system df, очистка dangling images/volumes по регламенту.
+            5) Если это БД/TSDB/логи — включить/проверить retention, архивацию, перенос на отдельный том.
+            6) При необходимости — расширить диск/раздел.

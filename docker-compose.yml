@@ -23,15 +23,9 @@ services:
     restart: always
     depends_on:
     - node-exporter
-    healthcheck:
-    test: ["CMD-SHELL", "curl -f http://localhost:9090/-/ready || exit 1"]
-    interval: 10s
-    retries: 5
-    start_period: 10s
-    timeout: 5s
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ./prometheus/rules:/etc/prometheus/rules:ro
+      - /media/monitoring-stack/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - /media/monitoring-stack/prometheus/rules:/etc/prometheus/rules:ro
       - prometheus_data:/prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
@@ -132,6 +126,34 @@ services:
     networks: ["monitoring"]
     depends_on:
       - loki
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    restart: always
+    volumes:
+      - /opt/monitoring-stack/prometheus/alertmanager:/etc/alertmanager:ro
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+    ports:
+      - "9093:9093"
+    networks: ["monitoring"]
+
+  audit-api:
+    build: ./audit-api
+    container_name: audit-api
+    restart: always
+    environment:
+      - DB_SCHEMA=public
+      - DATABASE_URL=postgresql+asyncpg://postgres:123@postgres:5432/monitordb
+      - PROM_URL=http://prometheus:9090
+      - LOKI_URL=http://185.233.81.213:3100
+      - REPORT_WINDOW_MINUTES=60
+      - TELEGRAM_BOT_TOKEN=8415197312:AAGGCP78A0fGwtOMaaEv0WKFzn5jD2HBxcE
+      - TELEGRAM_CHAT_ID=-1003214522324
+      - TELEGRAM_ENABLED=true
+    ports:
+      - "8000:8000"
+    networks: ["monitoring"]
 
 volumes:
   prometheus_data: {}
