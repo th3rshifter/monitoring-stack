@@ -1,0 +1,62 @@
+#/opt/promtail/config/promtail.yml
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: fail2ban
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: fail2ban
+          host: server2
+          __path__: /var/log/fail2ban.log
+
+  - job_name: x-ui
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: x-ui
+          host: server2
+          __path__: /usr/local/x-ui/*.log
+
+  - job_name: auth
+      static_configs:
+      - targets: [localhost]
+        labels:
+          job: auth
+          host: server2
+          __path__: /var/log/auth.log
+
+  - job_name: system
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: system
+          host: server2
+          __path__: /var/log/syslog
+  
+  - job_name: journald
+    journal:
+      max_age: 24h
+      labels:
+        job: system
+        host: server2                                                          
+  
+  - job_name: auth
+    journal:
+      max_age: 12h
+      labels:
+        job: auth
+        host: server2
+    relabel_configs:
+      - source_labels: ['__journal__systemd_unit']
+        regex: '(ssh\.service|sshd\.service)'
+        action: keep

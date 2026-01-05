@@ -1,37 +1,23 @@
-# cd /media/sf_monitoring-stack
-# docker compose up -d prometheus
+# prometheus
 
-В репозитории используется Linux (Ubuntu) запущенной на VMWare Oracle. Все основные компоненты запускаются в докер контейнерах, что упрощает развертывание и обновление компонентов и ОС.
+cd /media/sf_monitoring-stack
+docker compose up -d prometheus
 
-Используемый стек:
-– Linux (Ubuntu)
-– Docker / Docker Compose
-– PostgreSQL
-– Prometheus
-– Alertmanager
-– Grafana
-– Loki
-– Node Exporter
-– cAdvisor
-– Fail2Ban
-– Xray / X-UI
+cd opt/monitoring-stack/prometheus/alertmanager/
 
-Prometheus используется для сбора метрик с хоста, контейнеров и сервисов. Node Exporter и cAdvisor обеспечивают сбор данных о системе и контейнерах.
-Alertmanager принимает алерты от Prometheus, группирует их и отвечает за отправку уведомлений, на данном примере в Telegram. Конфигурация может быть расширена под разные каналы оповещений.
-Grafana используется для визуализации метрик и логов. В качестве источников данных подключены Prometheus и Loki.
-Loki применяется для централизованного сбора и хранения логов, что упрощает поиск ошибок и анализ событий.
-PostgreSQL используется как база данных для сервисов, которым требуется постоянное хранилище данных.
-Fail2Ban работает на уровне операционной системы и фиксирует события, связанные с безопасностью и попытками несанкционированного доступа.
-Xray и X-UI используются как отдельные сервисы, их состояние и логи также учитываются при мониторинге.
-Проект запускается через Docker Compose. Конфигурации можно изменять и дополнять под конкретные задачи.
+#audit-api
 
-Запуск:
-Установить Docker и Docker Compose.
-Клонировать репозиторий через git clone https://github.com/th3rshifter/monitoring-stack.
-Запустить в терминале: docker compose up -d находясь в каталоге проекта, после чего проверить работоспособность всех контейнеров.
+cd /media/sf_monitoring-stack
+docker compose build audit-api
+docker compose up -d --force-recreate audit-api
 
-Доступ к сервисам:
-– Prometheus: http://localhost:9090
-– Grafana: http://localhost:3000
+#Все контейнеры
 
-Репозиторий используется как рабочий набор конфигураций для тестирования системы, настройки и эксплуатации сервисов мониторинга и логирования.
+docker ps -a
+
+#Нагрузка CPU 
+
+timeout 2m bash -c 'while :; do :; done'
+
+# Со второго сервера конфиги сохранить в эту папку и написать как устанавливать
+#обновить докер файл под все наши зависимости
