@@ -1,4 +1,3 @@
-https://github.com/th3rshifter/monitoring-stack/tree/main/audit-api
 
 ![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/4.jpg)
 
