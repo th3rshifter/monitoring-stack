@@ -1,6 +1,11 @@
 
+![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/1.jpg)
+![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/2.jpg)
+![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/3.jpg)
 ![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/4.jpg)
-
+![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/5.jpg)
+![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/7.jpg)
+![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/8.jpg)
 
 ======
 ## 🧱 Используемый стэк
