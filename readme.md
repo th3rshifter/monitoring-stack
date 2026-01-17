@@ -1,9 +1,21 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/th3rshifter/monitoring-stack/main/audit-api/1.jpg" width="24%" />
+  <img src="https://raw.githubusercontent.com/th3rshifter/monitoring-stack/main/audit-api/2.jpg" width="24%" />
+  <img src="https://raw.githubusercontent.com/th3rshifter/monitoring-stack/main/audit-api/3.jpg" width="24%" />
+  <img src="https://raw.githubusercontent.com/th3rshifter/monitoring-stack/main/audit-api/4.jpg" width="24%" />
+  <img src="https://raw.githubusercontent.com/th3rshifter/monitoring-stack/main/audit-api/5.jpg" width="24%" />
+  <img src="https://raw.githubusercontent.com/th3rshifter/monitoring-stack/main/audit-api/6.jpg" width="24%" />
+  <img src="https://raw.githubusercontent.com/th3rshifter/monitoring-stack/main/audit-api/7.jpg" width="24%" />
+  <img src="https://raw.githubusercontent.com/th3rshifter/monitoring-stack/main/audit-api/8.jpg" width="24%" />
+</p>
+
 
 ![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/1.jpg)
 ![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/2.jpg)
 ![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/3.jpg)
 ![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/4.jpg)
 ![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/5.jpg)
+![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/6.jpg)
 ![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/7.jpg)
 ![Alt text for the image](https://github.com/th3rshifter/monitoring-stack/blob/main/audit-api/8.jpg)
 
